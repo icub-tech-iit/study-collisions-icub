@@ -23,9 +23,8 @@
 #include <gazebo/common/Events.hh>
 #include <ignition/math/Pose3.hh>
 
-
-
-
+// for storing the results
+#include <matioCpp/matioCpp.h>
 
 #define INTERVAL_SIZE_DEGREES 1.0
 
@@ -53,14 +52,21 @@ class jointSpaceIterator {
         gazebo::physics::Model *robotModel;
 
         std::vector<std::string> sensorVector;
+
+        std::vector<int> shoulderJointIntervals { 0, 0, 0 }; //stores how many intervals we have per joint
+
         
         // set ports to receive the collision data
+        yarp::os::BufferedPort<yarp::os::Bottle> collisions_port_bool;
+        yarp::os::Bottle *collisionsBottle;
 
 
         bool init();
+        bool openPorts();
         bool getJointLimits();
         bool iterate();
         bool computeCollision(int joint_0, int joint_1, int joint_2);
+        bool saveData();
 
         jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName);
 

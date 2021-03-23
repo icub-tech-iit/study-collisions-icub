@@ -13,9 +13,10 @@ set(YARP_REQUIRED_VERSION 3.3.2)
 find_package(YCM ${YCM_REQUIRED_VERSION} REQUIRED)
 find_package(YARP ${YARP_REQUIRED_VERSION} REQUIRED)
 find_package(Gazebo REQUIRED)
+find_package(matioCpp REQUIRED)
 
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
-list(APPEND CMAKE_MODULE_PATH ${ICUBCONTRIB_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH ${ICUBCONTRIB_MODULE_PATH} matioCpp)
 
 include(YarpIDL)
 include(YarpInstallationHelpers)
@@ -35,6 +36,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 add_executable(${PROJECTNAME} ${source} ${header})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GAZEBO_INCLUDE_DIRS}  )
-target_link_libraries(${PROJECTNAME} ${YARP_LIBRARIES} ${GAZEBO_LIBRARIES} )
+target_link_libraries(${PROJECTNAME} ${YARP_LIBRARIES} ${GAZEBO_LIBRARIES} matioCpp::matioCpp )
 
 install(TARGETS ${PROJECTNAME} DESTINATION bin)

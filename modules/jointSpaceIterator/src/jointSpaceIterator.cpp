@@ -42,12 +42,32 @@ bool jointSpaceIterator::init()
     encoders.resize(nj);
     command.resize(nj);
 
+    if(!openPorts())
+    {
+        yError("Failed to open collisions port");
+        robotDevice->close();
+        return false;
+    }
+    
+    while(collisions_port_bool.getInputCount() <= 0)
+    {
+        yarp::os::Time::delay(0.2); //wait until the port is connected
+    }
+
+
     return true;
+}
+
+bool jointSpaceIterator::openPorts()
+{
+    bool ok = collisions_port_bool.open("/JSI/collision:i");
+    return ok;
 }
 
 jointSpaceIterator::~jointSpaceIterator()
 {
     robotDevice->close();
+    collisions_port_bool.close();
 }
 
 bool jointSpaceIterator::getJointLimits() {
@@ -64,7 +84,6 @@ bool jointSpaceIterator::getJointLimits() {
 
 bool jointSpaceIterator::iterate()
 {
-    std::vector<int> shoulderJointIntervals { 0, 0, 0 }; //stores how many intervals we have per joint
     for(int i=1; i<4; i++)
     {
         double jointRange = jointLimitsBottle.get(1).asList()->get(i).asDouble() - jointLimitsBottle.get(2).asList()->get(i).asDouble();
@@ -99,7 +118,7 @@ bool jointSpaceIterator::iterate()
 
 bool jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
 {
-    bool collision = false;
+    //bool collision = false;
     bool done = false;
 
     // degrees
@@ -136,16 +155,56 @@ bool jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
     }
 
     // then we query for collisions
+    yInfo() << "checking the collision";
+    collisionsBottle = collisions_port_bool.read(true); // we want blocking - we need to make sure we have the output of the simulator
+    if (collisionsBottle != NULL)
+    {
+        yInfo() << "bottle was " << collisionsBottle->toString();
+        collision_map[joint_0][joint_1][joint_2] = collisionsBottle->get(0).asInt();
+        yInfo() << "we got " << collision_map[joint_0][joint_1][joint_2] << "collisions";
+    }
 
-    if(collision)
+    /*if(collision)
     {
         collision_map[joint_0][joint_1][joint_2] = 1; //1 for collision
     }
     else
     {
         collision_map[joint_0][joint_1][joint_2] = 0; //0 for no collision
-    }
+    }*/
     return true;
+}
+
+bool jointSpaceIterator::saveData()
+{
+    std::vector<int> linear_matrix;
+    // we linearize the 3D matrix before proceding with matio conversion
+    for (auto& _collisions_joint0 : collision_map)
+    {
+        for (auto& _collisions_joint1 : _collisions_joint0)
+        {
+            for (auto& _collisions_joint2 : _collisions_joint1)
+            {
+                linear_matrix.push_back(_collisions_joint2);
+            }
+        }
+    }
+
+    // now we start the matioCpp convertion process
+    // first create timestamps vector
+
+    // and the structures for the actual data too
+    std::vector<matioCpp::Variable> test_data;
+
+    // now we populate the matioCpp matrix
+    matioCpp::MultiDimensionalArray<int> out("data", {shoulderJointIntervals[2] , shoulderJointIntervals[1], shoulderJointIntervals[0] }, linear_matrix.data());
+    test_data.emplace_back(out); // Data
+
+    matioCpp::Struct collisions_matrix("collisions_matrix", test_data);
+    // and finally we write the file
+    // since we might save several files, we need to index them
+    matioCpp::File file = matioCpp::File::Create("collisions_matrix.mat");
+    return file.write(collisions_matrix);
 }
 
 int main(int argc, char *argv[]) 
@@ -191,6 +250,5 @@ int main(int argc, char *argv[])
         yError() << "failed to run the module";
         return 1;
     }
-
-    return 0;
+    return JSI_module.saveData();
 }

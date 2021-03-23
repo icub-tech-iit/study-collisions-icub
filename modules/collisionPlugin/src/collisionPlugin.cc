@@ -52,8 +52,6 @@ namespace gazebo
             yError() << "collisionDetectorPlugin : File .ini not found, load failed." ;
             return;
         }
-        contacts = contactManager->GetContacts();
-        yInfo() << "we got " << contacts.size() << " contacts.";
 
         // Try to open the YARP ports
         if (!this->openPorts()) {
@@ -62,7 +60,8 @@ namespace gazebo
         }
         yInfo() << "ports opened!";
 
-        yarp::os::Time::delay(10);
+
+        yarp::os::Time::delay(4); 
 
         // Create callback
         updateConnection = gazebo::event::Events::ConnectWorldUpdateBegin(boost::bind(&collisionDetectorPlugin::onUpdate, this, _1));
@@ -93,11 +92,28 @@ namespace gazebo
     void collisionDetectorPlugin::onUpdate(const gazebo::common::UpdateInfo& info)
     {
         yarp::os::Bottle msg;
-        msg.addString("I'm alive!");
+
+        // at each update we need to check if there are contacts
+        contacts = contactManager->GetContacts();
+
+        int num_contacts = contactManager->GetContactCount();
+
+        msg.addInt(num_contacts);
+        /*if(contacts.size() > 0)
+        {
+            msg.addInt(1);
+        }
+        else
+        {
+            msg.addInt(0);
+        }*/
         output_port_bool->prepare() = msg;
+        output_port_bool->write();
+        return;
 
 
-        ignition::math::Vector3d force = ignition::math::Vector3d::Zero;
+
+        /*ignition::math::Vector3d force = ignition::math::Vector3d::Zero;
         ignition::math::Vector3d torque = ignition::math::Vector3d::Zero;
         for(auto&& contact : contacts)
         {
@@ -109,7 +125,7 @@ namespace gazebo
             msg.addDouble(torque.X());
         }
         output_port_bool->write();
-        return;
+        return;*/
     }
 
 }
