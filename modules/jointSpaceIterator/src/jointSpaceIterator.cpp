@@ -42,6 +42,22 @@ bool jointSpaceIterator::init()
     encoders.resize(nj);
     command.resize(nj);
 
+    //we will use this temporary vector to set the acceleration and speeds
+    yarp::sig::Vector tmp;
+    tmp.resize(nj);
+
+    // This command will set reference accelerations to generate the velocity profile, considered to be 50 deg/sec^2
+    int i;
+    for (i = 0; i < nj; i++) {
+        tmp[i] = 75.0;
+    }
+    pos->setRefAccelerations(tmp.data());
+    // This will set the speed of the different joints at 10 deg/sec
+    for (i = 0; i < nj; i++) {
+        tmp[i] = 25.0;
+        pos->setRefSpeed(i, tmp[i]);
+    }
+
     if(!openPorts())
     {
         yError("Failed to open collisions port");
@@ -84,6 +100,12 @@ bool jointSpaceIterator::getJointLimits() {
 
 bool jointSpaceIterator::iterate()
 {
+    int collision = 0;
+
+    // danger zone is the zone where joint 1 is still close enough to the torso that rotating joint 2 eventually results in a collision
+    // when joint 1 is far enough from the torso that all possible positions of joint 2 DON'T result in a collision, we can ignore all 
+    // other positions of joint 1 from then on (because they wouldn't result in a collision anyway)
+    bool out_of_danger_zone = true;
     for(int i=1; i<4; i++)
     {
         double jointRange = jointLimitsBottle.get(1).asList()->get(i).asDouble() - jointLimitsBottle.get(2).asList()->get(i).asDouble();
@@ -91,24 +113,34 @@ bool jointSpaceIterator::iterate()
         shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES );
     }
 
-    // initialize the 3D vector of collisions now that we have the size
+    // initialize the 3D vector of collisions now that we have the size (initialized with 0s)
     std::vector< std::vector< std::vector<int> > > temp_vect(shoulderJointIntervals[0],
                                        std::vector< std::vector<int> >(shoulderJointIntervals[1], 
-                                                      std::vector<int>(shoulderJointIntervals[2])));
+                                                      std::vector<int>(shoulderJointIntervals[2], 0)));
     collision_map = temp_vect;
 
     for(int int_joint_0=0; int_joint_0<shoulderJointIntervals[0]; int_joint_0++)
     {
         for(int int_joint_1=0; int_joint_1<shoulderJointIntervals[1]; int_joint_1++)
         {
+            out_of_danger_zone = true;
             for(int int_joint_2=0; int_joint_2<shoulderJointIntervals[2]; int_joint_2++)
             {
                 yInfo() << "computing collision";
-                if(!computeCollision(int_joint_0, int_joint_1, int_joint_2))
+                collision = computeCollision(int_joint_0, int_joint_1, int_joint_2);
+                if(collision < 0)
                 {
                     yError() << "failed to compute collisions on gazebo, stopping...";
                     return false;
                 }
+                if(collision > 0) // we got a collision
+                {
+                    out_of_danger_zone = false; // since we got a collision, we are not yet out of the danger zone
+                }
+            }
+            if(out_of_danger_zone) // if we are out of the danger zone, we can ignore the positions from here onwards
+            {
+                break;
             }
         }
     }
@@ -116,7 +148,7 @@ bool jointSpaceIterator::iterate()
     return true;
 }
 
-bool jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
+int jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
 {
     //bool collision = false;
     bool done = false;
@@ -162,6 +194,7 @@ bool jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
         yInfo() << "bottle was " << collisionsBottle->toString();
         collision_map[joint_0][joint_1][joint_2] = collisionsBottle->get(0).asInt();
         yInfo() << "we got " << collision_map[joint_0][joint_1][joint_2] << "collisions";
+        return collisionsBottle->get(0).asInt();
     }
 
     /*if(collision)
@@ -172,7 +205,7 @@ bool jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
     {
         collision_map[joint_0][joint_1][joint_2] = 0; //0 for no collision
     }*/
-    return true;
+    return -1; // if the bottle was NULL, we get to this point, and we deal with it as error
 }
 
 bool jointSpaceIterator::saveData()

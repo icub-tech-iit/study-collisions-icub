@@ -65,7 +65,7 @@ class jointSpaceIterator {
         bool openPorts();
         bool getJointLimits();
         bool iterate();
-        bool computeCollision(int joint_0, int joint_1, int joint_2);
+        int computeCollision(int joint_0, int joint_1, int joint_2);
         bool saveData();
 
         jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName);
