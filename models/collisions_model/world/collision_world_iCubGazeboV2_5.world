@@ -30,8 +30,9 @@
 
     <model name="iCub">
       <include>
-        <plugin name='collision detector' filename='/home/alexandre/Desktop/Dektop/alex_forks/study-collisions-icub/build/modules/collisionPlugin/libjointSpaceIterator-collisionDetector.so'/>
-        <uri>file://collisions_model</uri>
+        <!-- <plugin name='collision detector' filename='/home/alexandre/Desktop/Dektop/alex_forks/study-collisions-icub/build/modules/collisionPlugin/libjointSpaceIterator-collisionDetector.so'/> -->
+        <plugin name='collision detector' filename='libjointSpaceIterator-collisionDetector.so'/>
+        <uri>model://iCubGazeboV2_5_collisions</uri>
         <pose>0.0 0.0 0.63 0.0 0.0 0.0</pose>
       </include>
 

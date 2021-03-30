@@ -26,7 +26,7 @@
 // for storing the results
 #include <matioCpp/matioCpp.h>
 
-#define INTERVAL_SIZE_DEGREES 1.0
+#define INTERVAL_SIZE_DEGREES 3.0
 
 class jointSpaceIterator {
 
@@ -34,6 +34,7 @@ class jointSpaceIterator {
         yarp::os::ResourceFinder rf;
 
         std::string robotName;
+        //std::string robotVersion;
         std::string context;
         std::string arm_ini_file;
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <world name="collision_world"> 
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>50</iters>
+          <sor>1.4</sor>
+        </solver>
+        <constraints>
+          <cfm>0</cfm>
+          <erp>1</erp>
+          <contact_max_correcting_vel>0</contact_max_correcting_vel>
+          <contact_surface_layer>0</contact_surface_layer>
+        </constraints>
+      </ode>
+    </physics>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <model name="iCub">
+      <include>
+        <!-- <plugin name='collision detector' filename='/home/alexandre/Desktop/Dektop/alex_forks/study-collisions-icub/build/modules/collisionPlugin/libjointSpaceIterator-collisionDetector.so'/> -->
+        <plugin name='collision detector' filename='libjointSpaceIterator-collisionDetector.so'/>
+        <uri>model://iCubGazeboV3_collisions</uri>
+        <pose>0.0 0.0 0.83 0.0 0.0 0.0</pose>
+      </include>
+
+      <joint name="fixed_base" type="fixed">
+        <parent>world</parent>
+        <child>iCub::root_link</child>
+      </joint>
+    </model>
+
+  </world>
+</sdf>

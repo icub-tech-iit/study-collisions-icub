@@ -87,7 +87,9 @@ jointSpaceIterator::~jointSpaceIterator()
 }
 
 bool jointSpaceIterator::getJointLimits() {
+
     jointLimitsBottle = rf.findGroup("LIMITS");
+    yInfo() << "we got the following bottle for the joint limits: " << jointLimitsBottle.toString();
     if(!jointLimitsBottle.isNull())
     {
         yInfo() << jointLimitsBottle.toString();
@@ -246,11 +248,28 @@ int main(int argc, char *argv[])
 
     yarp::os::ResourceFinder rf;
 
-    rf.setDefaultConfigFile("/home/alexandre/robotology-superbuild/src/robots-configuration/iCubTemplates/iCubTemplateV2_0/conf/icub_left_arm.ini");
-    rf.configure(argc, argv);
-
+   // rf.setDefaultConfigFile("/home/alexandre/robotology-superbuild/src/robots-configuration/iCubTemplates/iCubTemplateV2_0/conf/icub_left_arm.ini");
     yarp::os::Property params;
     params.fromCommand(argc, argv);
+
+    if (!params.check("robotVersion"))
+    {
+        fprintf(stderr, "please specify the robot version to be used! (iCubV2_5 or iCubV3)");
+        return -1;
+    }
+    std::string robotVersion = params.find("robotVersion").asString().c_str();
+
+    if (robotVersion == "iCubV2_5")
+    {
+        rf.setDefaultConfigFile("conf/gazebo_icub_left_arm_no_forearm.ini");
+    }
+    else
+    {
+        rf.setDefaultConfigFile("conf_icub3/gazebo_icub_left_arm_no_forearm.ini");
+    }
+    rf.configure(argc, argv);
+
+
 
     if (!params.check("robot"))
     {
