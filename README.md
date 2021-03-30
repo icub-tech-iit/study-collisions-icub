@@ -54,4 +54,4 @@ After connecting the ports, the module will automatically start moving the robot
 
 ### Changing the angle interval size
 
-The angle interval size for the `jointSpaceIterator` module is defined inside `modules/jointSpaceIterator.hpp`, line 29. You can change this value to the desired interval size, recompile, and run. Bear in mind that very small intervals will result in extended runtimes! 
+The angle interval size for the `jointSpaceIterator` module is defined in [jointSpaceIterator.hpp#L29](https://github.com/icub-tech-iit/study-collisions-icub/blob/075ca65098aa4c7afa9f9d46a28285e4040d1c4e/modules/jointSpaceIterator/include/jointSpaceIterator.hpp#L29). You can change this value to the desired interval size, recompile, and run. Bear in mind that very small intervals will result in extended runtimes! 
