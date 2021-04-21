@@ -11,3 +11,6 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/iCubGazeboV3_collisions DESTINATIO
 
 # Install worlds
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/world DESTINATION share/gazebo)
+
+# Install meshes - THIS WILL OVERWRITE THE MESHES FROM ROBOTOLOGY
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/simmechanics DESTINATION share/iCub/meshes)
