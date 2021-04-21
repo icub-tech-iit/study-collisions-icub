@@ -1,7 +1,7 @@
 #include "jointSpaceIterator.hpp"
 
 
-jointSpaceIterator::jointSpaceIterator(yarp::os::ResourceFinder _rf, std::string &_robotName) : rf(_rf), robotName(_robotName) {
+jointSpaceIterator::jointSpaceIterator(yarp::os::ResourceFinder _rf, std::string &_robotName, std::string &_robotVersion) : rf(_rf), robotName(_robotName), robotVersion(_robotVersion) {
 
 }
 
@@ -107,18 +107,27 @@ bool jointSpaceIterator::iterate()
     // danger zone is the zone where joint 1 is still close enough to the torso that rotating joint 2 eventually results in a collision
     // when joint 1 is far enough from the torso that all possible positions of joint 2 DON'T result in a collision, we can ignore all 
     // other positions of joint 1 from then on (because they wouldn't result in a collision anyway)
+    double jointRange = 0;
     bool out_of_danger_zone = true;
     for(int i=1; i<4; i++)
     {
-        double jointRange = jointLimitsBottle.get(1).asList()->get(i).asDouble() - jointLimitsBottle.get(2).asList()->get(i).asDouble();
+        // This workaround just for joint 1, since it becomes irrelevant when we are too far from the body anyway
+        if(i==2 && robotVersion == "iCubV3")
+        {
+            jointLimitsBottle.get(1).asList()->get(i).makeDouble(12.5);
+            jointLimitsBottle.get(2).asList()->get(i).makeDouble(11.5);
+        }
+        jointRange = jointLimitsBottle.get(1).asList()->get(i).asDouble() - jointLimitsBottle.get(2).asList()->get(i).asDouble();
         yInfo() << "joint range value is: " << jointRange;
         shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES );
+        yInfo() << "number of intervals is: " << jointRange/INTERVAL_SIZE_DEGREES << "defined here " << shoulderJointIntervals[i-1];
     }
 
     // initialize the 3D vector of collisions now that we have the size (initialized with 0s)
     std::vector< std::vector< std::vector<int> > > temp_vect(shoulderJointIntervals[0],
                                        std::vector< std::vector<int> >(shoulderJointIntervals[1], 
                                                       std::vector<int>(shoulderJointIntervals[2], 0)));
+
     collision_map = temp_vect;
 
     for(int int_joint_0=0; int_joint_0<shoulderJointIntervals[0]; int_joint_0++)
@@ -279,7 +288,7 @@ int main(int argc, char *argv[])
     }
     std::string robotName=params.find("robot").asString().c_str();
 
-    jointSpaceIterator JSI_module(rf, robotName);
+    jointSpaceIterator JSI_module(rf, robotName, robotVersion);
 
     // run the module
 

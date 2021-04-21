@@ -34,7 +34,7 @@ class jointSpaceIterator {
         yarp::os::ResourceFinder rf;
 
         std::string robotName;
-        //std::string robotVersion;
+        std::string robotVersion;
         std::string context;
         std::string arm_ini_file;
 
@@ -69,7 +69,7 @@ class jointSpaceIterator {
         int computeCollision(int joint_0, int joint_1, int joint_2);
         bool saveData();
 
-        jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName);
+        jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName, std::string &robotVersion);
 
         ~jointSpaceIterator();
 
