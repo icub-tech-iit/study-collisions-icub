@@ -111,16 +111,29 @@ bool jointSpaceIterator::iterate()
     bool out_of_danger_zone = true;
     for(int i=1; i<4; i++)
     {
+        jointLimitsVect[i-1][0] = jointLimitsBottle.get(1).asList()->get(i).asDouble(); // high
+        jointLimitsVect[i-1][1] = jointLimitsBottle.get(2).asList()->get(i).asDouble(); // low
         // This workaround just for joint 1, since it becomes irrelevant when we are too far from the body anyway
-        if(i==2 && robotVersion == "iCubV3")
+        if(i==2 && robotVersion == "iCubV3" && USE_HEURISTIC)
         {
-            jointLimitsBottle.get(1).asList()->get(i).makeDouble(12.5);
-            jointLimitsBottle.get(2).asList()->get(i).makeDouble(11.5);
+            jointLimitsVect[i-1][0] = JOINT_ROLL_MAX;
+            jointLimitsVect[i-1][1] = JOINT_ROLL_MIN;
         }
-        jointRange = jointLimitsBottle.get(1).asList()->get(i).asDouble() - jointLimitsBottle.get(2).asList()->get(i).asDouble();
+        jointRange = jointLimitsVect[i-1][0] - jointLimitsVect[i-1][1];
         yInfo() << "joint range value is: " << jointRange;
-        shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES );
-        yInfo() << "number of intervals is: " << jointRange/INTERVAL_SIZE_DEGREES << "defined here " << shoulderJointIntervals[i-1];
+        if(i==1)
+        {
+            shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES_PITCH );
+        }
+        if(i==2)
+        {
+            shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES_ROLL );
+        }
+        if(i==3)
+        {
+            shoulderJointIntervals[i-1] = int ( jointRange/INTERVAL_SIZE_DEGREES_YAW );
+        }
+        yInfo() << "number of intervals is: " << shoulderJointIntervals[i-1];
     }
 
     // initialize the 3D vector of collisions now that we have the size (initialized with 0s)
@@ -165,11 +178,11 @@ int jointSpaceIterator::computeCollision(int joint_0, int joint_1, int joint_2)
     bool done = false;
 
     // degrees
-    double angle_joint_0 = joint_0 * INTERVAL_SIZE_DEGREES + jointLimitsBottle.get(2).asList()->get(1).asDouble();
+    double angle_joint_0 = joint_0 * INTERVAL_SIZE_DEGREES_PITCH + jointLimitsVect[0][1];
     yInfo() << "angle is: " << angle_joint_0;
-    double angle_joint_1 = joint_1 * INTERVAL_SIZE_DEGREES + jointLimitsBottle.get(2).asList()->get(2).asDouble();
+    double angle_joint_1 = joint_1 * INTERVAL_SIZE_DEGREES_ROLL + jointLimitsVect[1][1];
     yInfo() << "angle is: " << angle_joint_1;
-    double angle_joint_2 = joint_2 * INTERVAL_SIZE_DEGREES + jointLimitsBottle.get(2).asList()->get(3).asDouble();
+    double angle_joint_2 = joint_2 * INTERVAL_SIZE_DEGREES_YAW + jointLimitsVect[2][1];
     yInfo() << "angle is: " << angle_joint_2;
     // first we move the robot in gazebo
     // we need to access the controlboards for this movement and query

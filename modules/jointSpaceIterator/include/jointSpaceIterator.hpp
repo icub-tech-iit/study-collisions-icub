@@ -26,7 +26,13 @@
 // for storing the results
 #include <matioCpp/matioCpp.h>
 
-#define INTERVAL_SIZE_DEGREES 3.0
+#define INTERVAL_SIZE_DEGREES_PITCH 3.0
+#define INTERVAL_SIZE_DEGREES_ROLL 0.1
+#define INTERVAL_SIZE_DEGREES_YAW 1.0
+
+#define USE_HEURISTIC true
+#define JOINT_ROLL_MAX 12.5
+#define JOINT_ROLL_MIN 11.5
 
 class jointSpaceIterator {
 
@@ -55,6 +61,8 @@ class jointSpaceIterator {
         std::vector<std::string> sensorVector;
 
         std::vector<int> shoulderJointIntervals { 0, 0, 0 }; //stores how many intervals we have per joint
+
+        std::vector<std::vector<double> > jointLimitsVect {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
 
         
         // set ports to receive the collision data
