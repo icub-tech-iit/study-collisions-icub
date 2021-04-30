@@ -643,14 +643,6 @@
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_chest_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <surface>
-        <contact>
-          <ode/>
-        </contact>
-        <friction>
-          <ode/>
-        </friction>
-      </surface>
     </collision>
   </link>
   <joint name="torso_yaw" type="revolute">
@@ -831,7 +823,7 @@
       <inertia ixx="0.01" ixy="-3.5032e-05" ixz="-2.4436e-05" iyy="0.01" iyz="-5.52877e-05" izz="0.01"/>
     </inertial>
     <visual>
-      <origin xyz="0.026393097869193402 -0.141531126106492 -0.00725239764460193" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
+      <origin xyz="0.026393097869193402 -0.14153112610649202 -0.007252397644601654" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_l_shoulder_2_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -841,11 +833,11 @@
     </visual>
   </link>
   <joint name="l_shoulder_roll" type="revolute">
-    <origin xyz="0.004992849331690818 0.111499838456099 0.0002686502277366859" rpy="-0.17453296141 -0.0537475993193 0"/>
+    <origin xyz="0.004992849331690818 0.111499838456099 0.0002686502277366859" rpy="-0.244346 -0.0537475993193 0"/>
     <axis xyz="0.9999998262417684 2.0348252649515786e-07 -4.0230228454118944e-08"/>
     <parent link="l_shoulder_1"/>
     <child link="l_shoulder_2"/>
-    <limit effort="50000" lower="0.157079632679" upper="2.84488668075" velocity="120.0"/>
+    <limit effort="50000" lower="0.157079632679" upper="2.87979326579" velocity="120.0"/>
     <dynamics damping="2.0" friction="0.0"/>
   </joint>
   <link name="l_shoulder_3">
@@ -855,7 +847,7 @@
       <inertia ixx="0.01" ixy="-3.76336e-07" ixz="2.93189e-06" iyy="0.01" iyz="-3.52325e-06" izz="0.01"/>
     </inertial>
     <visual>
-      <origin xyz="0.030743231026171738 -0.14153148936381538 0.047047641079459794" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
+      <origin xyz="0.030743231026171724 -0.14153148936381538 0.04704764107946006" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_l_shoulder_3_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -877,7 +869,7 @@
       <inertia ixx="0.00418487" ixy="1.22463e-05" ixz="0.000218498" iyy="0.0043558" iyz="0.000215164" izz="0.00214117"/>
     </inertial>
     <visual>
-      <origin xyz="0.030743149468679197 -0.14153106591133113 0.06954758245258447" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
+      <origin xyz="0.03074314946867922 -0.1415310659113312 0.06954758245258466" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_l_upperarm_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -886,7 +878,7 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0.030743149468679197 -0.14153106591133113 0.06954758245258447" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
+      <origin xyz="0.03074314946867922 -0.1415310659113312 0.06954758245258466" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_l_upperarm_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -907,7 +899,7 @@
       <inertia ixx="0.01" ixy="7.51175e-07" ixz="-9.8725e-06" iyy="0.01" iyz="-1.03338e-05" izz="0.01"/>
     </inertial>
     <visual>
-      <origin xyz="0.02074321923375987 -0.14003141848790232 0.19324791999016794" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
+      <origin xyz="0.020743219233759703 -0.14003141848790235 0.19324791999016847" rpy="-0.0715644949881 -0.0619699884186 -1.29535744982"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_l_elbow_1_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -1049,11 +1041,11 @@
     </visual>
   </link>
   <joint name="r_shoulder_roll" type="revolute">
-    <origin xyz="0.007489008185044648 -0.11150041046657978 0.0004027858966975245" rpy="0.174533062341 -0.0537477925791 -6.13233268885e-07"/>
+    <origin xyz="0.007489008185044648 -0.11150041046657978 0.0004027858966975245" rpy="0.244346 -0.0537477925791 -6.13233268885e-07"/>
     <axis xyz="-0.9999998262417887 4.210501436396896e-08 2.463048118239719e-08"/>
     <parent link="r_shoulder_1"/>
     <child link="r_shoulder_2"/>
-    <limit effort="50000" lower="0.157079632679" upper="2.84488668075" velocity="120.0"/>
+    <limit effort="50000" lower="0.157079632679" upper="2.87979326579" velocity="120.0"/>
     <dynamics damping="2.0" friction="0.0"/>
   </joint>
   <link name="r_shoulder_3">
@@ -1063,7 +1055,7 @@
       <inertia ixx="0.01" ixy="5.87638e-07" ixz="-2.8754e-06" iyy="0.01" iyz="-3.42816e-06" izz="0.01"/>
     </inertial>
     <visual>
-      <origin xyz="0.03074320745223619 0.1415314977120317 0.047047631370218286" rpy="-0.0715644603308 0.0619699233851 -1.84623504024"/>
+      <origin xyz="0.030743207452236194 0.1415314977120317 0.04704763137021827" rpy="-0.0715644603308 0.0619699233851 -1.84623504024"/>
       <geometry>
         <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_r_shoulder_3_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -1087,7 +1079,7 @@
     <visual>
       <origin xyz="0.030743125543818573 0.14153107587930094 0.06954757274337194" rpy="-0.0715644603308 0.0619699233851 -1.84623504024"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_r_upperarm_skintest_prt.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_r_upperarm_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/>
@@ -1096,7 +1088,7 @@
     <collision>
       <origin xyz="0.030743125543818573 0.14153107587930094 0.06954757274337194" rpy="-0.0715644603308 0.0619699233851 -1.84623504024"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_r_upperarm_skintest_prt.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/simmechanics/sim_icub3_r_upperarm_prt.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
