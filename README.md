@@ -54,9 +54,9 @@ After connecting the ports, the module will automatically start moving the robot
 
 ### Options and heuristics for the test
 
-You can change some of the options and heuristics to make the test run faster. These `jointSpaceIterator` options are defined in lines **insert lines here**. You can specify the interval size for each angle individually (The critical angle in this study was the shoulder roll, so we used a much finer interval size for that angle, and larger ones for the remaining two). Bear in mind that smaller interval sizes means longer running times, or even the module being unable to run due to a too-large results matrix.
+You can change some of the options and heuristics to make the test run faster. These `jointSpaceIterator` options are defined in [jointSpaceIterator.hpp#L29-L35](https://github.com/icub-tech-iit/study-collisions-icub/blob/642811f815947548bf612542f479a0070db88d40/modules/jointSpaceIterator/include/jointSpaceIterator.hpp#L29-L35). You can specify the interval size for each angle individually (The critical angle in this study was the shoulder roll, so we used a much finer interval size for that angle, and larger ones for the remaining two). Bear in mind that smaller interval sizes means longer running times, or even the module being unable to run due to a too-large results matrix.
 
-You can also activate a particular heuristic to speed up the study by focusing on a particular window for the roll angle. This is defined in lines **insert lines here**. This can be particularly useful if you already have a rough idea of where the collisions happen, or following a run with larger step sizes, in order to more accurately pinpoint the collisions.
+You can also activate a particular heuristic to speed up the study by focusing on a particular window for the roll angle. This is defined in [jointSpaceIterator.hpp#L33-L35](https://github.com/icub-tech-iit/study-collisions-icub/blob/642811f815947548bf612542f479a0070db88d40/modules/jointSpaceIterator/include/jointSpaceIterator.hpp#L33-L35). This can be particularly useful if you already have a rough idea of where the collisions happen, or following a run with larger step sizes, in order to more accurately pinpoint the collisions.
 
 
 ## Common issues
