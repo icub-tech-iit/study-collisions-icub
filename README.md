@@ -41,9 +41,9 @@ The following steps should be executed in a sequence:
 gazebo world/collision_world_iCubGazeboV3.world 
 ```
 - on gazebo GUI, activate `view->contacts`;
-- on another terminal, run the joint space iterator module (for icub 2.5 replace `iCubV3` for `iCubV2_5`):
+- on another terminal, run the joint space iterator module (for icub 2.5 replace `iCubV3` for `iCubV2_5`). Specify also which arm to run the test on (left/right):
 ```
-jointSpaceIterator --robot iCubSim --robotVersion iCubV3
+jointSpaceIterator --robot icubSim --robotVersion iCubV3 --arm right
 ```
 - finally, connect the collision ports:
 ```
@@ -52,6 +52,23 @@ yarp connect /collision:o /JSI/collision:i
 
 After connecting the ports, the module will automatically start moving the robot and collecting data. This process can take a few hours depending on the angle interval size (default 3 degrees, ~1 hour).
 
-### Changing the angle interval size
+### Options and heuristics for the test
 
-The angle interval size for the `jointSpaceIterator` module is defined in [jointSpaceIterator.hpp#L29](https://github.com/icub-tech-iit/study-collisions-icub/blob/075ca65098aa4c7afa9f9d46a28285e4040d1c4e/modules/jointSpaceIterator/include/jointSpaceIterator.hpp#L29). You can change this value to the desired interval size, recompile, and run. Bear in mind that very small intervals will result in extended runtimes! 
+You can change some of the options and heuristics to make the test run faster. These `jointSpaceIterator` options are defined in lines **insert lines here**. You can specify the interval size for each angle individually (The critical angle in this study was the shoulder roll, so we used a much finer interval size for that angle, and larger ones for the remaining two). Bear in mind that smaller interval sizes means longer running times, or even the module being unable to run due to a too-large results matrix.
+
+You can also activate a particular heuristic to speed up the study by focusing on a particular window for the roll angle. This is defined in lines **insert lines here**. This can be particularly useful if you already have a rough idea of where the collisions happen, or following a run with larger step sizes, in order to more accurately pinpoint the collisions.
+
+
+## Common issues
+
+### Running jointSpaceIterator module
+
+A common issue arises when the step intervals chosen for the test are set too small. This leads to an exponential increase in the number of intervals the module has to go through, which in turn means the results matrix has to be initialized with too many entries, leading to a module kill. If this happens, try increasing the interval size for the angles. A good policy is to only have an interval size <1 for one single angle.
+
+### iCub3 Gazebo model issues
+
+The iCub3 URDF model used for this study was tweaked to allow the study of the collisions for the upper arms only. As a consequences, collisions in the shoulder and elbow joints and on the forearms have been disabled. If you are using your own model to run the collision test and are detecting too many collisions, double-check the URDF file in the sections corresponding to these joints/links, and remove the `<collision>` segment.
+
+If, on the other hand, you are not detecting any collisions while running the test, the issue could be two-fold:
+1. Double check that the `view->contacts` option is enabled on your gazebo GUI;
+2. Check your model URDF file and confirm that there is a `<collision>` section for the upperarm link. Additionally, make sure you have included a contact sensor for that link. for more information on this, check the model instructions here **insert link to model page with its readme**.
