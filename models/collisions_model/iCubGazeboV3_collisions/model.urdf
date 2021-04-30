@@ -1463,7 +1463,7 @@
     <geometry>
       <mesh>
         <scale>0.001 0.001 0.001</scale>
-        <uri>model://iCub/meshes/simmechanics/sim_icub3_r_upperarm_skintest_prt.stl</uri>
+        <uri>model://iCub/meshes/simmechanics/sim_icub3_r_upperarm_prt.stl</uri>
       </mesh>
     </geometry>
     <surface>
