@@ -1,7 +1,7 @@
 #include "jointSpaceIterator.hpp"
 
 
-jointSpaceIterator::jointSpaceIterator(yarp::os::ResourceFinder _rf, std::string &_robotName, std::string &_robotVersion) : rf(_rf), robotName(_robotName), robotVersion(_robotVersion) {
+jointSpaceIterator::jointSpaceIterator(yarp::os::ResourceFinder _rf, std::string &_robotName, std::string &_robotVersion, std::string &_arm) : rf(_rf), robotName(_robotName), robotVersion(_robotVersion), arm(_arm) {
 
 }
 
@@ -10,7 +10,8 @@ bool jointSpaceIterator::init()
 
     std::string remotePorts="/";
     remotePorts+=robotName;
-    remotePorts+="/right_arm";
+    //remotePorts+="/right_arm";
+    remotePorts+="/" + arm + "_arm";
 
     std::string localPorts="/test/client";
     
@@ -279,15 +280,29 @@ int main(int argc, char *argv[])
         fprintf(stderr, "please specify the robot version to be used! (iCubV2_5 or iCubV3)");
         return -1;
     }
+
+    if (!params.check("arm"))
+    {
+        fprintf(stderr, "please specify which arm to be used! (left or right)");
+        return -1;
+    }
+    std::string arm = params.find("arm").asString().c_str();
+    if (arm != "left" && arm != "right")
+    {
+        fprintf(stderr, "arm option should be either left or right");
+        return -1;
+    }
     std::string robotVersion = params.find("robotVersion").asString().c_str();
 
     if (robotVersion == "iCubV2_5")
     {
-        rf.setDefaultConfigFile("conf/gazebo_icub_left_arm_no_forearm.ini");
+        std::string config_file = "conf/gazebo_icub_" + arm + "_arm_no_forearm.ini";
+        rf.setDefaultConfigFile(config_file);
     }
     else
     {
-        rf.setDefaultConfigFile("conf_icub3/gazebo_icub_left_arm_no_forearm.ini");
+        std::string config_file = "conf_icub3/gazebo_icub_" + arm + "_arm_no_forearm.ini";
+        rf.setDefaultConfigFile(config_file);
     }
     rf.configure(argc, argv);
 
@@ -296,12 +311,12 @@ int main(int argc, char *argv[])
     if (!params.check("robot"))
     {
         fprintf(stderr, "Please specify the name of the robot\n");
-        fprintf(stderr, "--robot name (e.g. icub)\n");
+        fprintf(stderr, "--robot name (e.g. icub or icubSim)\n");
         return 1;
     }
     std::string robotName=params.find("robot").asString().c_str();
 
-    jointSpaceIterator JSI_module(rf, robotName, robotVersion);
+    jointSpaceIterator JSI_module(rf, robotName, robotVersion, arm);
 
     // run the module
 

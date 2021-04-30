@@ -31,8 +31,8 @@
 #define INTERVAL_SIZE_DEGREES_YAW 1.0
 
 #define USE_HEURISTIC true
-#define JOINT_ROLL_MAX 12.5
-#define JOINT_ROLL_MIN 11.5
+#define JOINT_ROLL_MAX 17.5
+#define JOINT_ROLL_MIN 15.0
 
 class jointSpaceIterator {
 
@@ -43,6 +43,7 @@ class jointSpaceIterator {
         std::string robotVersion;
         std::string context;
         std::string arm_ini_file;
+        std::string arm;
 
         yarp::os::Bottle jointLimitsBottle;
 
@@ -77,7 +78,7 @@ class jointSpaceIterator {
         int computeCollision(int joint_0, int joint_1, int joint_2);
         bool saveData();
 
-        jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName, std::string &robotVersion);
+        jointSpaceIterator(yarp::os::ResourceFinder rf, std::string &robotName, std::string &robotVersion, std::string &arm);
 
         ~jointSpaceIterator();
 
