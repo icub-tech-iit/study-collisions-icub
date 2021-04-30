@@ -71,4 +71,4 @@ The iCub3 URDF model used for this study was tweaked to allow the study of the c
 
 If, on the other hand, you are not detecting any collisions while running the test, the issue could be two-fold:
 1. Double check that the `view->contacts` option is enabled on your gazebo GUI;
-2. Check your model URDF file and confirm that there is a `<collision>` section for the upperarm link. Additionally, make sure you have included a contact sensor for that link. for more information on this, check the model instructions here **insert link to model page with its readme**.
+2. Check your model URDF file and confirm that there is a `<collision>` section for the upperarm link. Additionally, make sure you have included a contact sensor for that link. for more information on this, check the model instructions here [iCubV3](https://github.com/icub-tech-iit/study-collisions-icub/tree/master/models/collisions_model/iCubGazeboV3_collisions) or here [iCubV2_5](https://github.com/icub-tech-iit/study-collisions-icub/tree/master/models/collisions_model/iCubGazeboV2_5_collisions).
